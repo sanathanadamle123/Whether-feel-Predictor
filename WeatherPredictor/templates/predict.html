@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Interactive Predictor - Weather Feel AI{% endblock %}
+{% block page_title %}Interactive Weather Predictor{% endblock %}
+
+{% block content %}
+<div class="predictor-grid">
+    <!-- Left Column: Controls & Sliders -->
+    <div class="glass-card controls-card">
+        <h2><i class="fas fa-sliders-h" style="color: var(--accent-blue);"></i> Weather Parameters</h2>
+
+        <!-- Temperature Slider -->
+        <div class="slider-group">
+            <div class="slider-header">
+                <span><i class="fas fa-thermometer-half" style="color: var(--accent-coral);"></i> Temperature</span>
+                <span class="slider-val" id="temp-slider-val">25°C</span>
+            </div>
+            <input type="range" id="temp-slider" class="custom-slider" min="-20" max="50" value="25" step="1">
+        </div>
+
+        <!-- Humidity Slider -->
+        <div class="slider-group">
+            <div class="slider-header">
+                <span><i class="fas fa-tint" style="color: var(--accent-blue);"></i> Humidity</span>
+                <span class="slider-val" id="humidity-slider-val">50%</span>
+            </div>
+            <input type="range" id="humidity-slider" class="custom-slider" min="0" max="100" value="50" step="1">
+        </div>
+
+        <!-- Wind Speed Slider -->
+        <div class="slider-group">
+            <div class="slider-header">
+                <span><i class="fas fa-wind" style="color: var(--accent-emerald);"></i> Wind Speed</span>
+                <span class="slider-val" id="wind-slider-val">15 km/h</span>
+            </div>
+            <input type="range" id="wind-slider" class="custom-slider" min="0" max="120" value="15" step="1">
+        </div>
+
+        <!-- Pressure Slider -->
+        <div class="slider-group">
+            <div class="slider-header">
+                <span><i class="fas fa-compress-alt" style="color: var(--accent-purple);"></i> Barometric Pressure</span>
+                <span class="slider-val" id="pressure-slider-val">1013 hPa</span>
+            </div>
+            <input type="range" id="pressure-slider" class="custom-slider" min="850" max="1100" value="1013" step="1">
+        </div>
+
+        <!-- UV Index Slider -->
+        <div class="slider-group">
+            <div class="slider-header">
+                <span><i class="fas fa-sun" style="color: var(--accent-amber);"></i> UV Index</span>
+                <span class="slider-val" id="uv-slider-val">5</span>
+            </div>
+            <input type="range" id="uv-slider" class="custom-slider" min="0" max="15" value="5" step="1">
+        </div>
+
+        <!-- Rain Probability Slider -->
+        <div class="slider-group">
+            <div class="slider-header">
+                <span><i class="fas fa-cloud-showers-heavy" style="color: var(--accent-blue);"></i> Rain Probability</span>
+                <span class="slider-val" id="rain-slider-val">10%</span>
+            </div>
+            <input type="range" id="rain-slider" class="custom-slider" min="0" max="100" value="10" step="1">
+        </div>
+
+        <!-- Season & Time Dropdowns -->
+        <div class="select-group">
+            <div>
+                <label style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:0.4rem;">Season</label>
+                <select id="season-select" class="custom-select">
+                    <option value="Summer">Summer</option>
+                    <option value="Winter">Winter</option>
+                    <option value="Rainy">Rainy</option>
+                    <option value="Autumn">Autumn</option>
+                    <option value="Spring">Spring</option>
+                </select>
+            </div>
+            <div>
+                <label style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:0.4rem;">Time of Day</label>
+                <select id="time-select" class="custom-select">
+                    <option value="Morning">Morning</option>
+                    <option value="Afternoon" selected>Afternoon</option>
+                    <option value="Evening">Evening</option>
+                    <option value="Night">Night</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Live AI Prediction & Comfort Meter -->
+    <div class="glass-card output-card">
+        <div class="weather-badge" id="weather-badge">🌤️</div>
+        
+        <div>
+            <div style="font-size:0.9rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px;">AI Weather Feeling</div>
+            <div class="prediction-title" id="prediction-title">Comfortable</div>
+            <div style="font-size:1.5rem; font-weight:700; margin-top:0.2rem;" id="prediction-temp-text">25°C</div>
+        </div>
+
+        <!-- Circular Comfort Gauge -->
+        <div class="gauge-container">
+            <svg class="gauge-svg" viewBox="0 0 160 160">
+                <circle class="gauge-bg" cx="80" cy="80" r="70"></circle>
+                <circle class="gauge-fill" id="gauge-circle" cx="80" cy="80" r="70"></circle>
+            </svg>
+            <div class="gauge-center">
+                <div class="gauge-percent" id="gauge-percent-text">85%</div>
+                <div class="gauge-label">Comfort Score</div>
+            </div>
+        </div>
+
+        <!-- Recommendation Box -->
+        <div class="recommendation-box">
+            <div style="font-size:0.85rem; font-weight:600; color:var(--text-secondary); margin-bottom:0.3rem;"><i class="fas fa-lightbulb" style="color:var(--accent-amber);"></i> AI Recommendation</div>
+            <div id="recommendation-text" style="font-size:0.95rem; line-height:1.4;">Wear light cotton clothes. Enjoy the pleasant day!</div>
+        </div>
+
+        <!-- Voice Text-to-Speech Button -->
+        <button id="voice-speech-btn" class="voice-btn">
+            <i class="fas fa-volume-up"></i> Speak Prediction
+        </button>
+    </div>
+</div>
+{% endblock %}

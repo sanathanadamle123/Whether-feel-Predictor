@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Weather Feel AI Predictor{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="glass-card auth-card">
+        <div style="margin-bottom: 1.5rem; text-align: center;">
+            <i class="fas fa-cloud-sun-rain" style="font-size: 3rem; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+            <h2 style="font-size: 1.6rem; font-weight: 700; margin-top: 0.5rem;">WeatherFeel AI</h2>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">Interactive Weather Feel Predictor Platform</p>
+        </div>
+
+        <div class="auth-tabs">
+            <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Login</button>
+            <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Register</button>
+            <button class="auth-tab" id="tab-forgot" onclick="switchAuthTab('forgot')">Forgot</button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="form-login" onsubmit="handleLogin(event)">
+            <div class="input-group">
+                <label><i class="fas fa-user"></i> Username or Email</label>
+                <input type="text" id="login-username" class="input-control" placeholder="Enter username (e.g. demo)" required>
+            </div>
+            <div class="input-group">
+                <label><i class="fas fa-lock"></i> Password</label>
+                <input type="password" id="login-password" class="input-control" placeholder="Enter password (e.g. demo123)" required>
+            </div>
+            <button type="submit" class="btn-primary">Sign In <i class="fas fa-arrow-right"></i></button>
+
+            <div style="margin-top: 1.5rem; background: rgba(255,255,255,0.04); padding: 0.75rem; border-radius: var(--radius-sm); font-size: 0.8rem; color: var(--text-secondary);">
+                <strong>Demo Credentials:</strong><br>
+                User: <code>demo</code> / <code>demo123</code><br>
+                Admin: <code>admin</code> / <code>admin123</code>
+            </div>
+        </form>
+
+        <!-- Register Form -->
+        <form id="form-register" onsubmit="handleRegister(event)" style="display: none;">
+            <div class="input-group">
+                <label><i class="fas fa-user"></i> Username</label>
+                <input type="text" id="reg-username" class="input-control" placeholder="Choose a username" required>
+            </div>
+            <div class="input-group">
+                <label><i class="fas fa-envelope"></i> Email Address</label>
+                <input type="email" id="reg-email" class="input-control" placeholder="name@example.com" required>
+            </div>
+            <div class="input-group">
+                <label><i class="fas fa-lock"></i> Password</label>
+                <input type="password" id="reg-password" class="input-control" placeholder="Create a password" required>
+            </div>
+            <button type="submit" class="btn-primary">Create Account <i class="fas fa-user-plus"></i></button>
+        </form>
+
+        <!-- Forgot Password Form -->
+        <form id="form-forgot" onsubmit="handleForgot(event)" style="display: none;">
+            <div class="input-group">
+                <label><i class="fas fa-envelope"></i> Account Email</label>
+                <input type="email" id="forgot-email" class="input-control" placeholder="Enter registered email" required>
+            </div>
+            <button type="submit" class="btn-primary">Reset Password <i class="fas fa-paper-plane"></i></button>
+        </form>
+    </div>
+</div>
+
+<script>
+function switchAuthTab(tab) {
+    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(`tab-${tab}`).classList.add('active');
+
+    document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
+    document.getElementById('form-register').style.display = tab === 'register' ? 'block' : 'none';
+    document.getElementById('form-forgot').style.display = tab === 'forgot' ? 'block' : 'none';
+}
+
+async function handleLogin(e) {
+    e.preventDefault();
+    const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            username: document.getElementById('login-username').value,
+            password: document.getElementById('login-password').value
+        })
+    });
+    const data = await res.json();
+    if (data.success) {
+        window.location.href = data.role === 'admin' ? '/admin' : '/';
+    } else {
+        showToast(data.message, 'error');
+    }
+}
+
+async function handleRegister(e) {
+    e.preventDefault();
+    const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            username: document.getElementById('reg-username').value,
+            email: document.getElementById('reg-email').value,
+            password: document.getElementById('reg-password').value
+        })
+    });
+    const data = await res.json();
+    if (data.success) {
+        window.location.href = '/';
+    } else {
+        showToast(data.message, 'error');
+    }
+}
+
+function handleForgot(e) {
+    e.preventDefault();
+    showToast("Password reset instructions sent to email!", "info");
+    switchAuthTab('login');
+}
+</script>
+{% endblock %}

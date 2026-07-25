@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Weather Feel AI Predictor{% endblock %}
+{% block page_title %}Weather Analytics Dashboard{% endblock %}
+
+{% block content %}
+<!-- Top Summary Stat Cards -->
+<div class="stats-grid">
+    <div class="glass-card stat-card">
+        <div class="stat-icon"><i class="fas fa-calculator"></i></div>
+        <div class="stat-info">
+            <h3 id="stat-total-predictions">0</h3>
+            <p>Total Predictions</p>
+        </div>
+    </div>
+    <div class="glass-card stat-card">
+        <div class="stat-icon" style="background: rgba(52, 211, 153, 0.15); color: var(--accent-emerald);"><i class="fas fa-thermometer-half"></i></div>
+        <div class="stat-info">
+            <h3 id="stat-avg-temp">0°C</h3>
+            <p>Average Temperature</p>
+        </div>
+    </div>
+    <div class="glass-card stat-card">
+        <div class="stat-icon" style="background: rgba(251, 191, 36, 0.15); color: var(--accent-amber);"><i class="fas fa-smile"></i></div>
+        <div class="stat-info">
+            <h3 id="stat-avg-comfort">0%</h3>
+            <p>Average Comfort Score</p>
+        </div>
+    </div>
+    <div class="glass-card stat-card">
+        <div class="stat-icon" style="background: rgba(168, 85, 247, 0.15); color: var(--accent-purple);"><i class="fas fa-cloud-sun"></i></div>
+        <div class="stat-info">
+            <h3>Summer</h3>
+            <p>Active Season</p>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Section -->
+<div class="charts-grid">
+    <div class="glass-card chart-card">
+        <h3><i class="fas fa-chart-area" style="color: var(--accent-blue);"></i> Temperature & Comfort Trend</h3>
+        <canvas id="chart-temperature"></canvas>
+    </div>
+    <div class="glass-card chart-card">
+        <h3><i class="fas fa-chart-pie" style="color: var(--accent-purple);"></i> Prediction Category Distribution</h3>
+        <canvas id="chart-frequency"></canvas>
+    </div>
+</div>
+
+<!-- Daily Weather Quote & Interactive Predictor Link -->
+<div class="predictor-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 2rem;">
+    <div class="glass-card" style="border-left: 4px solid var(--accent-blue);">
+        <h3><i class="fas fa-quote-left" style="color: var(--accent-blue);"></i> Daily Weather Quote</h3>
+        <p style="font-size: 1.1rem; font-style: italic; margin-top: 0.75rem; color: var(--text-primary);">
+            "Every day brings a different sky. Enjoy every season of life."
+        </p>
+        <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted);">— Weather Feel AI Inspiration</div>
+    </div>
+
+    <div class="glass-card" style="display: flex; flex-direction: column; justify-content: center; align-items: flex-start;">
+        <h3><i class="fas fa-wand-magic-sparkles" style="color: var(--accent-purple);"></i> Real-Time Predictor</h3>
+        <p style="color: var(--text-secondary); margin: 0.5rem 0 1rem 0; font-size: 0.9rem;">
+            Adjust temperature, humidity, wind, and pressure sliders to predict weather feeling instantly with live animations.
+        </p>
+        <a href="{{ url_for('predict_page') }}" class="btn-primary" style="width: auto; text-decoration: none; padding: 0.65rem 1.5rem;">
+            Open Interactive Predictor <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+</div>
+
+<!-- Recent Predictions Table -->
+<div class="glass-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3><i class="fas fa-history" style="color: var(--accent-emerald);"></i> Recent Predictions</h3>
+        <a href="{{ url_for('history_page') }}" style="color: var(--accent-blue); text-decoration: none; font-size: 0.9rem; font-weight: 500;">View All <i class="fas fa-chevron-right"></i></a>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="glass-table">
+            <thead>
+                <tr>
+                    <th>Date / Time</th>
+                    <th>Prediction</th>
+                    <th>Temperature</th>
+                    <th>Comfort Score</th>
+                    <th>Season</th>
+                    <th>Recommendation</th>
+                </tr>
+            </thead>
+            <tbody id="dashboard-recent-tbody">
+                <!-- Dynamically populated -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        const res = await fetch('/api/stats');
+        const data = await res.json();
+        if (data.success && data.recent_predictions) {
+            const tbody = document.getElementById('dashboard-recent-tbody');
+            if (tbody) {
+                tbody.innerHTML = '';
+                if (data.recent_predictions.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No recent predictions.</td></tr>';
+                    return;
+                }
+                data.recent_predictions.forEach(r => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${r.created_at}</td>
+                        <td><strong style="color:${r.theme_color}">${r.weather_icon} ${r.prediction}</strong></td>
+                        <td>${r.temperature}°C</td>
+                        <td>${r.comfort_index}%</td>
+                        <td>${r.season}</td>
+                        <td><small>${r.suggestion}</small></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+        }
+    } catch(e) { console.error(e); }
+});
+</script>
+{% endblock %}

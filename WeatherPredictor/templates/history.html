@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}History - Weather Feel AI Predictor{% endblock %}
+{% block page_title %}Prediction History & Logs{% endblock %}
+
+{% block content %}
+<div class="glass-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+        <div style="position: relative; flex: 1; max-width: 380px;">
+            <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+            <input type="text" id="history-search" class="input-control" placeholder="Search by weather feeling, season or suggestion..." style="padding-left: 2.75rem;">
+        </div>
+
+        <div style="display: flex; gap: 0.75rem;">
+            <button id="export-pdf-btn" class="btn-primary" style="margin-top:0; width:auto; padding: 0.65rem 1.25rem; background: var(--glass-bg-hover); border: 1px solid var(--glass-border);">
+                <i class="fas fa-file-pdf" style="color: var(--accent-coral);"></i> Export PDF Report
+            </button>
+            <button id="clear-history-btn" class="btn-primary" style="margin-top:0; width:auto; padding: 0.65rem 1.25rem; background: rgba(248, 113, 113, 0.15); color: var(--accent-coral);">
+                <i class="fas fa-trash-alt"></i> Clear All History
+            </button>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="glass-table">
+            <thead>
+                <tr>
+                    <th>Date / Time</th>
+                    <th>Prediction</th>
+                    <th>Temperature</th>
+                    <th>Comfort %</th>
+                    <th>Season / Time</th>
+                    <th>Recommendation</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="history-table-body">
+                <!-- Dynamically loaded via main.js fetchHistory() -->
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
